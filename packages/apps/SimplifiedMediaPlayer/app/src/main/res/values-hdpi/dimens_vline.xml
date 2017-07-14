@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="vline_player_text_artist_size">20dp</dimen>
+    <dimen name="vline_player_text_title_size">32dp</dimen>
+    <dimen name="vline_player_text_album_size">20dp</dimen>
+
+    <dimen name="player_control_button_size">55dp</dimen>
+    <dimen name="player_side_control_button_size">40dp</dimen>
+
+    <dimen name="vline_player_control_root_layout_paddingTop">15dp</dimen>
+    <dimen name="vline_player_control_root_layout_paddingBottom">30dp</dimen>
+    <dimen name="vline_player_control_root_layout_paddingLeftRight">37dp</dimen>
+    <dimen name="vline_player_control_layout_height">85dp</dimen>
+    <dimen name="vline_player_control_layout_padding">32dp</dimen>
+    <dimen name="vline_player_control_trackCountTextView">15dp</dimen>
+</resources>

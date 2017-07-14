@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    >
+
+    <ImageView
+        android:id="@+id/additional_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/image_description"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_photo"
+        android:visibility="gone"/>
+
+    <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomGLSurfaceView
+        android:id="@+id/cover_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_transparent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/vline_player_control_root_layout_paddingLeftRight"
+        android:paddingRight="@dimen/vline_player_control_root_layout_paddingLeftRight"
+        android:paddingBottom="@dimen/vline_player_control_root_layout_paddingBottom">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/vline_player_control_root_layout_paddingTop">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/textLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:background="@drawable/vline_control_selection">
+
+                <com.gromaudio.simplifiedmediaplayer.ui.customElements.TrackInfo
+                    android:id="@+id/additional_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/vline_player_text_artist_size"/>
+
+                <com.gromaudio.simplifiedmediaplayer.ui.customElements.TrackInfo
+                    android:id="@+id/additional_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/vline_player_text_title_size"/>
+
+                <com.gromaudio.simplifiedmediaplayer.ui.customElements.TrackInfo
+                    android:id="@+id/additional_album"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/vline_player_text_album_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/progressBarRootLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.gromaudio.simplifiedmediaplayer.ui.customElements.FontTextView
+                        android:id="@+id/position_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/undefined_widget_time"
+                        android:textColor="@android:color/white"
+                        custom:typefaceAsset="fonts/lato-regular.ttf"
+                        android:textSize="@dimen/vline_player_control_trackCountTextView"/>
+
+                    <SeekBar
+                        android:id="@+id/playerControlViewProgressBar"
+                        style="@style/sbProgressBarStyleVline"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/pcv_seek_bar_height"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:paddingBottom="0dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="0dp"
+                        android:progress="60"/>
+
+                    <com.gromaudio.simplifiedmediaplayer.ui.customElements.FontTextView
+                        android:id="@+id/additional_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/undefined_widget_time"
+                        android:textColor="@android:color/white"
+                        custom:typefaceAsset="fonts/lato-regular.ttf"
+                        android:textSize="@dimen/vline_player_control_trackCountTextView"/>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    >
+
+                    <com.gromaudio.simplifiedmediaplayer.ui.customElements.FontTextView
+                        android:id="@+id/trackCountTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/vline_player_control_trackCountTextView"
+                        custom:typefaceAsset="fonts/lato-regular.ttf"/>
+                </FrameLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/vline_player_control_layout_height"
+                android:background="@color/vline_player_control_layout"
+                android:baselineAligned="false"
+                android:gravity="center_vertical">
+
+                <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomImageButton
+                    android:id="@+id/right_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/player_side_control_button_size"
+
+                    android:paddingLeft="@dimen/vline_player_control_layout_padding"
+                    android:paddingRight="@dimen/vline_player_control_layout_padding"
+
+                    android:contentDescription="@string/image_description"
+                    android:scaleType="fitCenter"
+                    android:background="@null"
+                    android:src="@drawable/ic_repeat_42dp"/>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomImageButton
+                        android:id="@+id/prev_button"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/player_control_button_size"
+
+                        android:contentDescription="@string/image_description"
+                        android:scaleType="fitCenter"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:src="@drawable/ic_prev_42dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp">
+
+                        <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomImageButton
+                            android:id="@+id/play_button_additional"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+
+                            android:contentDescription="@string/image_description"
+                            android:scaleType="fitCenter"
+                            android:background="@null"
+                            android:src="@drawable/ic_play_47dp"/>
+                    </LinearLayout>
+
+
+                    <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomImageButton
+                        android:id="@+id/next_button"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/player_control_button_size"
+
+                        android:contentDescription="@string/image_description"
+                        android:scaleType="fitCenter"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:src="@drawable/ic_next_42dp"/>
+
+                </LinearLayout>
+
+                <com.gromaudio.simplifiedmediaplayer.ui.customElements.CustomImageButton
+                    android:id="@+id/left_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/player_side_control_button_size"
+                    android:layout_gravity="center"
+
+                    android:paddingLeft="@dimen/vline_player_control_layout_padding"
+                    android:paddingRight="@dimen/vline_player_control_layout_padding"
+
+                    android:contentDescription="@string/image_description"
+                    android:scaleType="fitCenter"
+                    android:background="@null"
+                    android:src="@drawable/ic_shuffle_42dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

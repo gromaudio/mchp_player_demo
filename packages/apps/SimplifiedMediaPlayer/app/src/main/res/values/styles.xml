@@ -1,0 +1,57 @@
+<resources>
+    <!--
+    <style name="Theme.AppCompat.NoActionBar.FullScreen" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/app_background</item>
+        <item name="colorPrimaryDark">@color/app_status_bar</item>
+        <item name="android:windowBackground">@color/app_background</item>
+    </style>
+    -->
+    <style name="Theme.AppCompat.NoActionBar.FullScreen" parent="Theme.AppCompat">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/app_background</item>
+        <item name="colorPrimaryDark">@color/app_status_bar</item>
+        <item name="android:windowBackground">@color/app_background</item>
+    </style>
+
+    <style name="AppTheme.LauncherActivity" parent="Theme.AppCompat.NoActionBar.FullScreen">
+
+    </style>
+
+    <style name="AppTheme.PlayerActivity" parent="Theme.AppCompat.NoActionBar.FullScreen">
+
+    </style>
+
+    <style name="sbProgressBarStyleVline">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/vline_launcher_progress_bar_bg</item>
+        <item name="android:indeterminateDrawable">@drawable/vline_launcher_progress_bar_bg</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:layout_centerInParent">true</item>
+
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:thumbOffset">0dp</item>
+    </style>
+
+
+    <style name="Custom.ImageButton" parent="@android:style/Widget.ImageButton">
+        <item name="android:background">@null</item>
+        <item name="android:contentDescription">@string/image_description</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <declare-styleable name="CustomGLSurfaceView">
+        <attr name="squareType" format="string"/>
+    </declare-styleable>
+
+</resources>

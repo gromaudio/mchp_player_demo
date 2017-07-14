@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.gromaudio.simplifiedmediaplayer.ui.customElements.PlayerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playerControlView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
