@@ -64,7 +64,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
         result.add(appDetail);
 
         appDetail = new AppDetail(
-            ctx.getString(R.string.android_usb_streaming), R.drawable.ic_usb_storage_75dp
+            ctx.getString(R.string.android_usb_streaming), R.drawable.ic_aoap_streaming_75dp
         );
         appDetail.setState(DISABLED);
         appDetail.setPlayerType(PlayerMgr.PlayerType.AOAP_PLAYER);
