@@ -13,6 +13,13 @@ public interface IDemoPlayer {
         ST_PLAYED
     };
 
+    //DemoPlayer Capabilities
+    public static final int CAP_COMMON   = 0x0000;
+    public static final int CAP_PROGRESS = 0x0001;
+    public static final int CAP_REPEAT   = 0x0002;
+    public static final int CAP_SHUFFLE  = 0x0004;
+    public static final int CAP_ALL  = CAP_PROGRESS|CAP_REPEAT|CAP_SHUFFLE;
+
     interface IDemoPlayerCallback {
         void onStateChanged();
     };
@@ -54,6 +61,11 @@ public interface IDemoPlayer {
 
     int getPosition();
 
+    int getShuffle();
+
+    int getRepeat();
+
+    int getCapabilities();
 
     void setCallback(IDemoPlayerCallback callback);
 

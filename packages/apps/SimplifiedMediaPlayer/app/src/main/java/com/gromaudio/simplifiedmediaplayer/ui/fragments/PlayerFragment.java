@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.gromaudio.simplifiedmediaplayer.App;
 import com.gromaudio.simplifiedmediaplayer.R;
@@ -15,6 +16,9 @@ import com.gromaudio.simplifiedmediaplayer.models.AppDetail;
 import com.gromaudio.simplifiedmediaplayer.players.IDemoPlayer;
 import com.gromaudio.simplifiedmediaplayer.ui.customElements.PlayerView;
 import com.gromaudio.utils.TimeUtils;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPlayerCallback {
@@ -98,7 +102,6 @@ public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPla
     }
 
     private void initPlayerView() {
-
         mPlayerView.setPlayButtonListener(new PlayerView.Listener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +169,9 @@ public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPla
             public void onClick(View v) {
                 if (mPlayer != null) {
                     boolean res = mPlayer.shuffleSwitch();
-                    mPlayerView.getLeftControlButton().setChecked(res);
+                    if (res) {
+                        mPlayerView.getLeftControlButton().setChecked( mPlayer.getShuffle() );
+                    }
                 }
             }
         });
@@ -176,7 +181,9 @@ public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPla
             public void onClick(View v) {
                 if (mPlayer != null) {
                     boolean res = mPlayer.repeatSwitch();
-                    mPlayerView.getRightControlButton().setChecked(res);
+                    if (res) {
+                        mPlayerView.getRightControlButton().setChecked(mPlayer.getRepeat());
+                    }
                 }
             }
         });
@@ -191,6 +198,8 @@ public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPla
 
     private void updateCurrentState() {
         if (mPlayer!=null && mPlayerView!=null) {
+            updateCapabilities();
+
             mPlayerView.setAlbumName( mPlayer.getAlbumName() );
             mPlayerView.setTrackName( mPlayer.getTrackName() );
             mPlayerView.setArtistName( mPlayer.getArtistName() );
@@ -214,7 +223,39 @@ public class PlayerFragment extends BaseFragment implements IDemoPlayer.IDemoPla
                 mHandler.removeCallbacks(mUpdateTimeTask);
             }
 
+            int shuffle = mPlayer.getShuffle();
+            mPlayerView.getLeftControlButton().setChecked( shuffle );
+
+            int repeat = mPlayer.getRepeat();
+            mPlayerView.getRightControlButton().setChecked( repeat );
+
             mPlayerView.setCover(R.drawable.albumart_mp_unknown);
+        }
+    }
+
+    private void updateCapabilities() {
+        if (mPlayer!=null) {
+            int caps = mPlayer.getCapabilities();
+            if ( (caps&IDemoPlayer.CAP_PROGRESS)==0 ) {
+                mPlayerView.setProgressBarVisibility(GONE);
+            }
+            else {
+                mPlayerView.setProgressBarVisibility(VISIBLE);
+            }
+
+            if ( (caps&IDemoPlayer.CAP_REPEAT)==0 ) {
+                mPlayerView.getRightControlButton().setVisibility(GONE);
+            }
+            else {
+                mPlayerView.getRightControlButton().setVisibility(VISIBLE);
+            }
+
+            if ( (caps&IDemoPlayer.CAP_SHUFFLE)==0 ) {
+                mPlayerView.getLeftControlButton().setVisibility(GONE);
+            }
+            else {
+                mPlayerView.getLeftControlButton().setVisibility(VISIBLE);
+            }
         }
     }
 

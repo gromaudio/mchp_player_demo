@@ -178,13 +178,13 @@ public class AoapPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public boolean repeatSwitch() {
         mRepeatSwitch = !mRepeatSwitch;
-        return mRepeatSwitch;
+        return true;
     }
 
     @Override
     public boolean shuffleSwitch() {
         mShuffleSwitch = !mShuffleSwitch;
-        return mShuffleSwitch;
+        return true;
     }
 
     /*
@@ -218,6 +218,21 @@ public class AoapPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public int getPosition() {
         return 50;
+    }
+
+    @Override
+    public int getShuffle() {
+        return mShuffleSwitch ? 1 : 0;
+    }
+
+    @Override
+    public int getRepeat() {
+        return mRepeatSwitch ? 1 : 0;
+    }
+
+    @Override
+    public int getCapabilities() {
+        return CAP_COMMON;
     }
 
     @Override

@@ -36,9 +36,9 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
 
     private DemoPlayerState mMediaState = DemoPlayerState.ST_STOPPED;
 
-    private boolean mRepeatSwitch = false;
+    private int mRepeatSwitch = 0;
 
-    private boolean mShuffleSwitch = false;
+    private int mShuffleSwitch = 0;
 
     private Random mRandom = new Random();
 
@@ -110,8 +110,8 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     Log.d(TAG, "onCompletion()");
-                    if (!mRepeatSwitch) {
-                        if (mShuffleSwitch) {
+                    if (mRepeatSwitch==0) {
+                        if (mShuffleSwitch==1) {
                             int index = mRandom.nextInt(mMediaFiles.size());
                             while (index == mCurrentIndex) {
                                 index = mRandom.nextInt(mMediaFiles.size());
@@ -274,15 +274,15 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public boolean repeatSwitch() {
         Log.d(TAG, "repeatSwitch()");
-        mRepeatSwitch = !mRepeatSwitch;
-        return mRepeatSwitch;
+        mRepeatSwitch = mRepeatSwitch==1 ? 0 : 1;
+        return true;
     }
 
     @Override
     public boolean shuffleSwitch() {
         Log.d(TAG, "shuffleSwitch()");
-        mShuffleSwitch = !mShuffleSwitch;
-        return mShuffleSwitch;
+        mShuffleSwitch = mShuffleSwitch==1 ? 0 : 1;
+        return true;
     }
 
     /*
@@ -324,6 +324,21 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             return (pos!=-1) ? pos : 0;
         }
         return 0;
+    }
+
+    @Override
+    public int getShuffle() {
+        return mShuffleSwitch;
+    }
+
+    @Override
+    public int getRepeat() {
+        return mRepeatSwitch;
+    }
+
+    @Override
+    public int getCapabilities() {
+        return CAP_ALL;
     }
 
     @Override

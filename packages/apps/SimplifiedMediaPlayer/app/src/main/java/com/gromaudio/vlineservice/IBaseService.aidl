@@ -9,5 +9,6 @@ interface IBaseService {
 
   void addListener(IBaseServiceListener listener);
   void removeListener(IBaseServiceListener listener);
-
+  int getIAPStatus();
+  int getAOAPStatus();
 }

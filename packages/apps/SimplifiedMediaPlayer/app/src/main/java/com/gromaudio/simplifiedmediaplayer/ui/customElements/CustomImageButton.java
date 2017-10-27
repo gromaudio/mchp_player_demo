@@ -17,11 +17,12 @@ import com.gromaudio.simplifiedmediaplayer.R;
 
 public class CustomImageButton extends ImageButton implements View.OnClickListener {
 
-	private boolean mIsChecked = false;
+	private int mIsChecked = 0;
 	private OnClickListener mClickListener = null;
 
 	private int mColorSelected = 0;
 	private int mColorFilterChecked = 0;
+	private int mColorFilterChecked2 = 0;
 
 	private boolean mIsChangeColor = false;
 	private boolean mIsOutRectTouch = false;
@@ -70,6 +71,7 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 		super.setOnClickListener(this);
 		mColorSelected = getResources().getColor(R.color.button_pressed);
 		mColorFilterChecked = getResources().getColor(R.color.button_pressed);
+        mColorFilterChecked2 = getResources().getColor(R.color.button_pressed2);
 
 		if (mIsChangeColor) {
 			setColorStyle();
@@ -80,9 +82,12 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 	}
 
 	private void setColorStyle() {
-		if (mIsChecked) {
+		if (mIsChecked == 1) {
 			getDrawable().setColorFilter(mColorFilterChecked, PorterDuff.Mode.MULTIPLY);
-		} else {
+		} else if (mIsChecked == 2) {
+            getDrawable().setColorFilter(mColorFilterChecked2, PorterDuff.Mode.MULTIPLY);
+        }
+        else {
 			getDrawable().setColorFilter(null);
 		}
 	}
@@ -97,11 +102,11 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 			if (!isLongClickable()) {
 				if (maskedAction == MotionEvent.ACTION_DOWN) {
 					mIsOutRectTouch = false;
-					mIsChecked = !mIsChecked;
+                    //mIsChecked = mIsChecked==1 ? 0 : 1;
 					if (mIsChangeColor) {
 						setColorStyle();
 					} else {
-						getDrawable().setColorFilter(mColorSelected, PorterDuff.Mode.MULTIPLY);
+						//getDrawable().setColorFilter(mColorSelected, PorterDuff.Mode.MULTIPLY);
 					}
 				} else if (maskedAction == MotionEvent.ACTION_UP && mIsChangeColor) {
 					setColorStyle();
@@ -110,18 +115,18 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 
 		} else {
 			if (!mIsOutRectTouch) {
-				mIsChecked = !mIsChecked;
+				//mIsChecked = mIsChecked==1 ? 0 : 1;
 				if (mIsChangeColor) {
 					setColorStyle();
 				} else {
-					getDrawable().setColorFilter(null);
+					//getDrawable().setColorFilter(null);
 				}
 				mIsOutRectTouch = true;
 			}
 		}
 
 		if (!mIsChangeColor && maskedAction == MotionEvent.ACTION_UP) {
-			getDrawable().setColorFilter(null);
+			//getDrawable().setColorFilter(null);
 		}
 
 		if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -153,10 +158,10 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 	}
 
 	public boolean isChecked() {
-		return mIsChecked;
+		return mIsChecked==1;
 	}
 
-	public void setChecked(boolean isChecked) {
+	public void setChecked(int isChecked) {
 		mIsChecked = isChecked;
 		if (mIsChangeColor) {
 			setColorStyle();
@@ -165,7 +170,7 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 
     @Override
     public void setSelected(boolean isSelected){
-        setChecked(isSelected);
+        setChecked(isSelected ? 1 : 0);
     }
 
 	/**
@@ -239,6 +244,7 @@ public class CustomImageButton extends ImageButton implements View.OnClickListen
 	public void setColorSelected(int colorSelected) {
 		mColorSelected = colorSelected;
 		mColorFilterChecked = colorSelected;
+        mColorFilterChecked2 = colorSelected;
 	}
 
 	@Override

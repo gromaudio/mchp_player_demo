@@ -124,6 +124,13 @@ public class PlayerView extends FrameLayout {
         return mProgressBar;
     }
 
+    public void setProgressBarVisibility(int visibility) {
+        mProgressBar.setVisibility(visibility);
+        mTrackCountTextView.setVisibility(visibility);
+        mTotalTime.setVisibility(visibility);
+        mPositionTime.setVisibility(visibility);
+    }
+
     private void setButtonListener(View view, final Listener listener) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override

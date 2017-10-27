@@ -9,6 +9,7 @@
     <color name="status_bar_background_gradient_end_color">#2c2c2f</color>
 
     <color name="button_pressed">#33b5e5</color>
+    <color name="button_pressed2">#33e555</color>
     <color name="black_transparent">#99171717</color>
     <color name="vline_player_control_layout">#7f020202</color>
     <color name="vline_background_pressed">#7f020202</color>

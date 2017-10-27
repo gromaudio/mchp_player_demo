@@ -270,7 +270,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
                 final AppDetail appDetail = getItem(position);
                 appDetail.setSelected(true);
             }
-            notifyItemChanged(position);
+            notifyDataSetChanged();
         }
 
         public void setState(AppDetail.STATE state, int position) {

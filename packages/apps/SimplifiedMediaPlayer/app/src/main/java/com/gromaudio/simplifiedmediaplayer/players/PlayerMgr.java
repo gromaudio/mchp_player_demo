@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -29,6 +30,8 @@ public class PlayerMgr {
 
     private AoapPlayer mAoapPlayer = new AoapPlayer();
 
+    private AppleIAPPlayer mAppleIAPPlayer = new AppleIAPPlayer();
+
     private FilePlayer mFilePlayer = new FilePlayer();
 
     private USBStateReceiver mUSBStateReceiver = new USBStateReceiver();
@@ -39,9 +42,13 @@ public class PlayerMgr {
 
     private BaseServiceListener mBaseServiceListener = new BaseServiceListener();
 
+    private Handler mHandler = new Handler();
+
     private String  mUSBPath = "";
 
     private boolean mAOAPConnected = false;
+    
+    private boolean mIAPConnected = false;
 
     private PlayerType mActivePlayerType = PlayerType.UNKNOWN_PLAYER;
 
@@ -67,18 +74,19 @@ public class PlayerMgr {
         mCallback = callback;
         closeCurrentPlayer();
         registerUSBReceiver(context);
-	registerStorageManager(context);
+        registerStorageManager(context);
         connectToNativeService();
         if (mNativeService==null) {
             return false;
         }
+        updateCurrentNativeStates();
         return true;
     }
 
     public void close(Context context) {
         closeCurrentPlayer();
         unregisterUSBReceiver(context);
-	unregisterStorageManager();
+        unregisterStorageManager();
         disconnectFromNativeService();
     }
 
@@ -94,6 +102,10 @@ public class PlayerMgr {
             mAoapPlayer.init(null);
             return mAoapPlayer;
         }
+        else if (player == PlayerType.ITUNES_PLAYER) {
+            mAppleIAPPlayer.init(null);
+            return mAppleIAPPlayer;
+        }
         else if (player == PlayerType.FILE_PLAYER) {
             mFilePlayer.init(mUSBPath);
             return mFilePlayer;
@@ -108,6 +120,9 @@ public class PlayerMgr {
     public boolean isPlayerEnabled(PlayerType player) {
         if (player == PlayerType.AOAP_PLAYER) {
             return mAOAPConnected;
+        }
+        else if (player == PlayerType.ITUNES_PLAYER) {
+            return mIAPConnected;
         }
         else if (player == PlayerType.FILE_PLAYER) {
             return (mUSBPath!="");
@@ -153,9 +168,7 @@ public class PlayerMgr {
                 case Intent.ACTION_MEDIA_MOUNTED:
                     if (!isInternalStorage(mediaPath)) {
                         mUSBPath = mediaPath;
-                        if (mCallback!=null) {
-                            mCallback.onPlayerStateChanged(PlayerType.FILE_PLAYER);
-                        }
+                        onStateChanged(PlayerType.FILE_PLAYER);
                     }
                     break;
 
@@ -164,9 +177,7 @@ public class PlayerMgr {
                 case Intent.ACTION_MEDIA_BAD_REMOVAL:
                     if ( mediaPath.equals(mUSBPath) ) {
                         mUSBPath = "";
-                        if (mCallback!=null) {
-                            mCallback.onPlayerStateChanged(PlayerType.FILE_PLAYER);
-                        }
+                        onStateChanged(PlayerType.FILE_PLAYER);
                     }
                     break;
             }
@@ -217,7 +228,7 @@ public class PlayerMgr {
                 vol.state == VolumeInfo.STATE_UNMOUNTED) 
             {
                 if (isInteresting(vol)) {
-                    refreshStorages();
+                    refreshStorage(vol);
                 }
             }
 	}
@@ -227,24 +238,29 @@ public class PlayerMgr {
         Log.d(TAG, "refreshStorages();");
         final List<VolumeInfo> volumes = mStorageManager.getVolumes();
         for (VolumeInfo vol : volumes) {
+            Log.d(TAG, "refreshStorages: check vol=" + vol.path);
+            refreshStorage(vol);
+        }
+    }
+
+    private void refreshStorage(VolumeInfo vol) {
+        if (vol != null) {
+            Log.d(TAG, "refreshStorage(v): " + vol.path);
             if (isInteresting(vol)) {
-               switch (vol.getState()) {
-                   case VolumeInfo.STATE_MOUNTED:
-                   case VolumeInfo.STATE_MOUNTED_READ_ONLY:
-                        mUSBPath = vol.path;
-                        if (mCallback!=null) {
-                            mCallback.onPlayerStateChanged(PlayerType.FILE_PLAYER);
-                        }
-			break;
-                   case VolumeInfo.STATE_UNMOUNTED:
-                        if (vol.path.equals(mUSBPath)) {
-                            mUSBPath = "";
-                            if (mCallback!=null) {
-                                mCallback.onPlayerStateChanged(PlayerType.FILE_PLAYER);
+                Log.d(TAG, "refreshStorage: intresting vol=" + vol);
+                switch (vol.getState()) {
+                    case VolumeInfo.STATE_MOUNTED:
+                    case VolumeInfo.STATE_MOUNTED_READ_ONLY:
+                            mUSBPath = vol.path;
+                            onStateChanged(PlayerType.FILE_PLAYER);
+                            break;
+                    case VolumeInfo.STATE_UNMOUNTED:
+                            if (vol.path.equals(mUSBPath)) {
+                                mUSBPath = "";
+                                onStateChanged(PlayerType.FILE_PLAYER);
                             }
-                        }
-                        break;
-               }
+                            break;
+                }
             }
         }
     }
@@ -311,14 +327,49 @@ public class PlayerMgr {
         public void onAOAPStatus(int key, int value) {
             if (key == STKEY_ACTIVE) {
                 mAOAPConnected = (value==1);
-                if (mCallback!=null) {
-                    mCallback.onPlayerStateChanged(PlayerType.AOAP_PLAYER);
-                }
+                onStateChanged(PlayerType.AOAP_PLAYER);
             }
         }
 
         @Override
         public void onCarPlayStatus(int key, int value) {
+        }
+
+        @Override
+        public void onIAPStatus(int key, int value) {
+            if (key == STKEY_ACTIVE) {
+                mIAPConnected = (value==1);
+                onStateChanged(PlayerType.ITUNES_PLAYER);
+            }
+        }
+    }
+
+    private void updateCurrentNativeStates() {
+        try {
+            int statusIAP = mNativeService.getIAPStatus();
+            int statusAOAP = mNativeService.getAOAPStatus();
+
+            mAOAPConnected = (statusAOAP==1);
+            onStateChanged(PlayerType.AOAP_PLAYER);
+
+            mIAPConnected = (statusIAP==1);
+            onStateChanged(PlayerType.ITUNES_PLAYER);
+
+        }catch (RemoteException ex) {
+            Log.e(TAG, " getIAPStatus() and getAOAPStatus() ex: " + ex);
+        }
+    }
+
+    private void onStateChanged(final PlayerType type) {
+        if (mCallback!=null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mCallback != null) {
+                        mCallback.onPlayerStateChanged(type);
+                    }
+                }
+            });
         }
     }
 
