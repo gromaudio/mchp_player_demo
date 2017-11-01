@@ -98,16 +98,20 @@ public class PlayerMgr {
             return null;
         }
         closeCurrentPlayer();
+        mActivePlayerType = player;
         if (player == PlayerType.AOAP_PLAYER) {
             mAoapPlayer.init(null);
+            mActivePlayer = mAoapPlayer;
             return mAoapPlayer;
         }
         else if (player == PlayerType.ITUNES_PLAYER) {
             mAppleIAPPlayer.init(null);
+            mActivePlayer = mAppleIAPPlayer;
             return mAppleIAPPlayer;
         }
         else if (player == PlayerType.FILE_PLAYER) {
             mFilePlayer.init(mUSBPath);
+            mActivePlayer = mFilePlayer;
             return mFilePlayer;
         }
         return null;

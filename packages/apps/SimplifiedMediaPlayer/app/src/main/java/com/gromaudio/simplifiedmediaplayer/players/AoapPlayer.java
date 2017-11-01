@@ -59,6 +59,12 @@ public class AoapPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public void close() {
         mMediaState = DemoPlayerState.ST_STOPPED;
+        if (mNativeService!=null) {
+            try {
+                mNativeService.onEvent(0, MEDIA_CONTROL_STOP);
+            } catch (RemoteException ex) {
+            }
+        }
         mNativeService = null;
     }
 

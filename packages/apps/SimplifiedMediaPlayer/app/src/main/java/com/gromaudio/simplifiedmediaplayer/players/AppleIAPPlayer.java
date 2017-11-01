@@ -72,6 +72,7 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
         mMediaState = DemoPlayerState.ST_STOPPED;
         if (mNativeService!=null) {
             try {
+                mNativeService.onEvent(0, MEDIA_CONTROL_STOP);
                 mNativeService.removeListener(mNativeServiceListener);
             }catch (RemoteException ex) {
                 Log.e(TAG, " removeListener() ex: " + ex);

@@ -60,6 +60,7 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
 
     @Override
     public void close() {
+        pause();
         mMediaState = DemoPlayerState.ST_STOPPED;
         mMediaDir = "";
         mMediaFiles.clear();
