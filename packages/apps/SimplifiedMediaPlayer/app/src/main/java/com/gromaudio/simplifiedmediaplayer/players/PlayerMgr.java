@@ -346,6 +346,16 @@ public class PlayerMgr {
                 onStateChanged(PlayerType.ITUNES_PLAYER);
             }
         }
+
+        @Override
+        public void onExternalSoundState(int state) {
+            //-1 - Unknown state, 0 - Silent, 1 - Sound
+            Log.e(TAG, " onExternalSoundState: " + state);
+            //Ducking local (USB) player if it is playing.
+            if (mActivePlayerType == PlayerType.FILE_PLAYER) {
+                mFilePlayer.setDucking(state==1);
+            }
+        }
     }
 
     private void updateCurrentNativeStates() {

@@ -135,7 +135,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             }
             return (res==0);
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                play();
+            }
             return false;
         }
     }
@@ -151,7 +153,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             }
             return (res==0);
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                pause();
+            }
             return false;
         }
     }
@@ -168,7 +172,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             }
             return (res==0);
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                next();
+            }
             return false;
         }
     }
@@ -185,7 +191,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             }
             return (res==0);
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                prev();
+            }
             return false;
         }
     }
@@ -213,7 +221,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
                 }
             }
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                repeatSwitch();
+            }
         }
         return true;
     }
@@ -228,7 +238,9 @@ public class AppleIAPPlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
                 }
             }
         } catch (RemoteException ex) {
-            updateNativeServiceLink();
+            if(updateNativeServiceLink() != null) {
+                shuffleSwitch();
+            }
         }
         return true;
     }

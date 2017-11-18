@@ -42,6 +42,8 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
 
     private Random mRandom = new Random();
 
+    private float mVolume = 1;
+
 
     /**********************************************************************
      ******                IDemoPlayer.IDemoPlayerCtl                ******
@@ -97,6 +99,7 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setDataSource(sFile);
             mMediaPlayer.prepare();
+            mMediaPlayer.setVolume(mVolume, mVolume);
             if (mMediaState == DemoPlayerState.ST_PLAYED) {
                 mMediaPlayer.start();
             }
@@ -221,6 +224,7 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public boolean play() {
         if (mMediaPlayer!=null) {
+            mMediaPlayer.setVolume(mVolume, mVolume);
             mMediaPlayer.start();
             setState(DemoPlayerState.ST_PLAYED);
             return true;
@@ -345,6 +349,15 @@ public class FilePlayer implements IDemoPlayer, IDemoPlayer.IDemoPlayerCtl {
     @Override
     public void setCallback(IDemoPlayerCallback callback) {
         mPlayerCallback = callback;
+    }
+
+    /**
+     * Enable or disable ducking for current Track.
+     */
+    public void setDucking(boolean enable) {
+        mVolume = enable ? 0.05f : 1f;
+        Log.d(TAG, "mMediaPlayer.setVolume: " + mVolume);
+        mMediaPlayer.setVolume(mVolume, mVolume);
     }
 
 }
