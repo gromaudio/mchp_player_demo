@@ -9,6 +9,9 @@ interface IBaseService {
 
   void addListener(IBaseServiceListener listener);
   void removeListener(IBaseServiceListener listener);
-  int getIAPStatus();
-  int getAOAPStatus();
+  int  getIAPStatus();
+  int  getAOAPStatus();
+  int  getCarPlayStatus();
+  void activateCarPlay(int activate);
+  void sendCarPlayTouchEvent(int x, int y);
 }

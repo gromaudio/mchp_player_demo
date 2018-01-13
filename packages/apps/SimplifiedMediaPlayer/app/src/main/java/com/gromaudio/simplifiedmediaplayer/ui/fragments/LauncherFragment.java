@@ -2,6 +2,7 @@ package com.gromaudio.simplifiedmediaplayer.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.gromaudio.simplifiedmediaplayer.R;
 import com.gromaudio.simplifiedmediaplayer.models.AppDetail;
 import com.gromaudio.simplifiedmediaplayer.players.IDemoPlayer;
 import com.gromaudio.simplifiedmediaplayer.players.PlayerMgr;
+import com.gromaudio.simplifiedmediaplayer.ui.activity.CarPlayActivity;
 import com.gromaudio.simplifiedmediaplayer.ui.activity.MainActivity;
 import com.gromaudio.utils.recyclerview.GridSpacingItemDecoration;
 import com.gromaudio.utils.recyclerview.WrappableGridLayoutManager;
@@ -29,6 +31,7 @@ import java.util.List;
 
 import static com.gromaudio.simplifiedmediaplayer.models.AppDetail.STATE.DISABLED;
 import static com.gromaudio.simplifiedmediaplayer.models.AppDetail.STATE.NORMAL;
+import static com.gromaudio.simplifiedmediaplayer.players.PlayerMgr.PlayerType.CARPLAY_PLAYER;
 
 
 public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerMgrCallback {
@@ -74,7 +77,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
             ctx.getString(R.string.car_play), R.drawable.ic_carplay_75dp
         );
         appDetail.setState(DISABLED);
-        appDetail.setPlayerType(PlayerMgr.PlayerType.CARPLAY_PLAYER);
+        appDetail.setPlayerType(CARPLAY_PLAYER);
         result.add(appDetail);
 
         appDetail = new AppDetail(
@@ -291,17 +294,26 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
             if (adapter instanceof RecyclerViewAdapter) {
                 final RecyclerViewAdapter a = (RecyclerViewAdapter) adapter;
                 final AppDetail appDetail = a.getItem(itemPosition);
-
                 if (appDetail.getState() == NORMAL) {
-                    IDemoPlayer player = mPlayerMgr.activatePlayer(appDetail.getPlayerType());
-                    if (player != null) {
+                    //CarPlay is special
+                    if (appDetail.getPlayerType() == CARPLAY_PLAYER) {
+                        IDemoPlayer player = mPlayerMgr.activatePlayer(appDetail.getPlayerType());
                         if (!appDetail.isSelected()) {
                             a.setSelection(itemPosition);
                         }
-                        startPlayerFragment(appDetail, player);
+                        Intent intent = new Intent(getContext(), CarPlayActivity.class);
+                        startActivity(intent);
                     }
                     else {
-                        showToast("Player '"+appDetail.getAppName()+"' can't be activated.");
+                        IDemoPlayer player = mPlayerMgr.activatePlayer(appDetail.getPlayerType());
+                        if (player != null) {
+                            if (!appDetail.isSelected()) {
+                                a.setSelection(itemPosition);
+                            }
+                            startPlayerFragment(appDetail, player);
+                        } else {
+                            showToast("Player '" + appDetail.getAppName() + "' can't be activated.");
+                        }
                     }
                 }
             }

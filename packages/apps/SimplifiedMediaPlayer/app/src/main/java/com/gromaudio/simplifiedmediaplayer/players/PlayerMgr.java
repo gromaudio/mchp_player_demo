@@ -50,6 +50,8 @@ public class PlayerMgr {
     
     private boolean mIAPConnected = false;
 
+    private boolean mCarPlayConnected = false;
+
     private PlayerType mActivePlayerType = PlayerType.UNKNOWN_PLAYER;
 
     private IDemoPlayer mActivePlayer = null;
@@ -114,10 +116,14 @@ public class PlayerMgr {
             mActivePlayer = mFilePlayer;
             return mFilePlayer;
         }
+        else if (player == PlayerType.CARPLAY_PLAYER) {
+            mActivePlayerType = PlayerType.UNKNOWN_PLAYER;
+            mActivePlayer = null;
+        }
         return null;
     }
 
-    public IDemoPlayer getActivePlayer() {
+    private IDemoPlayer getActivePlayer() {
         return mActivePlayer;
     }
 
@@ -127,6 +133,9 @@ public class PlayerMgr {
         }
         else if (player == PlayerType.ITUNES_PLAYER) {
             return mIAPConnected;
+        }
+        else if (player == PlayerType.CARPLAY_PLAYER) {
+            return mCarPlayConnected;
         }
         else if (player == PlayerType.FILE_PLAYER) {
             return (mUSBPath!="");
@@ -337,6 +346,10 @@ public class PlayerMgr {
 
         @Override
         public void onCarPlayStatus(int key, int value) {
+            if (key == STKEY_ACTIVE) {
+                mCarPlayConnected = (value==1);
+                onStateChanged(PlayerType.CARPLAY_PLAYER);
+            }
         }
 
         @Override
@@ -362,6 +375,7 @@ public class PlayerMgr {
         try {
             int statusIAP = mNativeService.getIAPStatus();
             int statusAOAP = mNativeService.getAOAPStatus();
+            int statusCarPlay = mNativeService.getCarPlayStatus();
 
             mAOAPConnected = (statusAOAP==1);
             onStateChanged(PlayerType.AOAP_PLAYER);
@@ -369,8 +383,11 @@ public class PlayerMgr {
             mIAPConnected = (statusIAP==1);
             onStateChanged(PlayerType.ITUNES_PLAYER);
 
+            mCarPlayConnected = (statusCarPlay==1);
+            onStateChanged(PlayerType.CARPLAY_PLAYER);
+
         }catch (RemoteException ex) {
-            Log.e(TAG, " getIAPStatus() and getAOAPStatus() ex: " + ex);
+            Log.e(TAG, " getIAPStatus(), getAOAPStatus(), getCarPlayStatus() ex: " + ex);
         }
     }
 

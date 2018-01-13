@@ -1,0 +1,78 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/carplay_background"
+    tools:context="com.gromaudio.simplifiedmediaplayer.ui.activity.CarPlayActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text="@string/carplay_connection"
+        android:textColor="#33b5e5"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="60px"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/carplay_panel"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10px"
+                android:layout_marginLeft="10px"
+                android:text="@string/carplay_port1"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10px"
+                android:text="@string/carplay_port2"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10px"
+                android:text="@string/carplay_port3"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10px"
+                android:text="@string/carplay_port4"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/dummy_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/dummy_button" />
+
+        </LinearLayout>
+
+</FrameLayout>

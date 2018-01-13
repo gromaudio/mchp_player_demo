@@ -15,4 +15,16 @@
     <string name="android_usb_streaming">Android USB Streaming</string>
     <string name="car_play">Car Play</string>
     <string name="android_auto">Android Auto</string>
+
+    <string name="title_activity_car_play">CarPlayActivity</string>
+    <string name="dummy_button">Close</string>
+    <string name="carplay_connection">CarPlay\n...connecting...</string>
+
+    <string name="carplay_port1">Port1: Disconnected</string>
+    <string name="carplay_port2">Port2: Android Device</string>
+    <string name="carplay_port3">Port3: iPhone</string>
+    <string name="carplay_port4">Port4: Mass Storage Device</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
