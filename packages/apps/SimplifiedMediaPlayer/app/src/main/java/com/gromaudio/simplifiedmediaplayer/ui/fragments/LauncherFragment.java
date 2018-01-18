@@ -155,7 +155,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
             for (int a=0; a < size; ++a) {
                 PlayerMgr.PlayerType playerType = adapter.getItem(a).getPlayerType();
                 if (player == playerType) {
-                    if (mPlayerMgr.isPlayerEnabled(playerType)) {
+                    if (mPlayerMgr!=null && mPlayerMgr.isPlayerEnabled(playerType)) {
                         adapter.setState(AppDetail.STATE.NORMAL, a);
                     }
                     else {
@@ -294,7 +294,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
             if (adapter instanceof RecyclerViewAdapter) {
                 final RecyclerViewAdapter a = (RecyclerViewAdapter) adapter;
                 final AppDetail appDetail = a.getItem(itemPosition);
-                if (appDetail.getState() == NORMAL) {
+                if (appDetail.getState() == NORMAL && mPlayerMgr!=null) {
                     //CarPlay is special
                     if (appDetail.getPlayerType() == CARPLAY_PLAYER) {
                         IDemoPlayer player = mPlayerMgr.activatePlayer(appDetail.getPlayerType());
