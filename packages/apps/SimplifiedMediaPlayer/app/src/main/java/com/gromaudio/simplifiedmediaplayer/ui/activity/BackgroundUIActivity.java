@@ -262,7 +262,7 @@ public class BackgroundUIActivity extends Activity {
         }
 
         @Override
-        void onAAutoStatus(int key, int value) {
+        public void onAAutoStatus(int key, int value) {
             if (mPlayerType == PLAYER_TYPE_AAUTO) {
                 if (((key == STKEY_ACTIVE) && (value == 0)) || ((key == STKEY_UI_BUTTON) && (value == 1))) {
                     mHandler.post(new Runnable() {
