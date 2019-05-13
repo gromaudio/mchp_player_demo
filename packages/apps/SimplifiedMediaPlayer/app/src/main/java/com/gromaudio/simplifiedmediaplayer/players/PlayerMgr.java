@@ -52,6 +52,8 @@ public class PlayerMgr {
 
     private boolean mCarPlayConnected = false;
 
+    private boolean mAAutoConnected = false;
+
     private PlayerType mActivePlayerType = PlayerType.UNKNOWN_PLAYER;
 
     private IDemoPlayer mActivePlayer = null;
@@ -116,7 +118,7 @@ public class PlayerMgr {
             mActivePlayer = mFilePlayer;
             return mFilePlayer;
         }
-        else if (player == PlayerType.CARPLAY_PLAYER) {
+        else if (player == PlayerType.CARPLAY_PLAYER || player == PlayerType.AAUTO_PLAYER) {
             mActivePlayerType = PlayerType.UNKNOWN_PLAYER;
             mActivePlayer = null;
         }
@@ -136,6 +138,9 @@ public class PlayerMgr {
         }
         else if (player == PlayerType.CARPLAY_PLAYER) {
             return mCarPlayConnected;
+        }
+        else if (player == PlayerType.AAUTO_PLAYER) {
+            return mAAutoConnected;
         }
         else if (player == PlayerType.FILE_PLAYER) {
             return (mUSBPath!="");
@@ -353,6 +358,14 @@ public class PlayerMgr {
         }
 
         @Override
+        public void onAAutoStatus(int key, int value) {
+            if (key == STKEY_ACTIVE) {
+                mAAutoConnected = (value==1);
+                onStateChanged(PlayerType.AAUTO_PLAYER);
+            }
+        }
+
+        @Override
         public void onIAPStatus(int key, int value) {
             if (key == STKEY_ACTIVE) {
                 mIAPConnected = (value==1);
@@ -376,6 +389,7 @@ public class PlayerMgr {
             int statusIAP = mNativeService.getIAPStatus();
             int statusAOAP = mNativeService.getAOAPStatus();
             int statusCarPlay = mNativeService.getCarPlayStatus();
+            int statusAAuto = mNativeService.getAAutoStatus();
 
             mAOAPConnected = (statusAOAP==1);
             onStateChanged(PlayerType.AOAP_PLAYER);
@@ -386,8 +400,11 @@ public class PlayerMgr {
             mCarPlayConnected = (statusCarPlay==1);
             onStateChanged(PlayerType.CARPLAY_PLAYER);
 
+            mAAutoConnected = (statusAAuto==1);
+            onStateChanged(PlayerType.AAUTO_PLAYER);
+
         }catch (RemoteException ex) {
-            Log.e(TAG, " getIAPStatus(), getAOAPStatus(), getCarPlayStatus() ex: " + ex);
+            Log.e(TAG, " getIAPStatus(), getAOAPStatus(), getCarPlayStatus(), getAAutoStatus() ex: " + ex);
         }
     }
 

@@ -21,7 +21,7 @@ import com.gromaudio.simplifiedmediaplayer.R;
 import com.gromaudio.simplifiedmediaplayer.models.AppDetail;
 import com.gromaudio.simplifiedmediaplayer.players.IDemoPlayer;
 import com.gromaudio.simplifiedmediaplayer.players.PlayerMgr;
-import com.gromaudio.simplifiedmediaplayer.ui.activity.CarPlayActivity;
+import com.gromaudio.simplifiedmediaplayer.ui.activity.BackgroundUIActivity;
 import com.gromaudio.simplifiedmediaplayer.ui.activity.MainActivity;
 import com.gromaudio.utils.recyclerview.GridSpacingItemDecoration;
 import com.gromaudio.utils.recyclerview.WrappableGridLayoutManager;
@@ -31,7 +31,11 @@ import java.util.List;
 
 import static com.gromaudio.simplifiedmediaplayer.models.AppDetail.STATE.DISABLED;
 import static com.gromaudio.simplifiedmediaplayer.models.AppDetail.STATE.NORMAL;
+import static com.gromaudio.simplifiedmediaplayer.players.PlayerMgr.PlayerType.AAUTO_PLAYER;
 import static com.gromaudio.simplifiedmediaplayer.players.PlayerMgr.PlayerType.CARPLAY_PLAYER;
+import static com.gromaudio.simplifiedmediaplayer.ui.activity.BackgroundUIActivity.EXTRA_PLAYER_TYPE;
+import static com.gromaudio.simplifiedmediaplayer.ui.activity.BackgroundUIActivity.PLAYER_TYPE_AAUTO;
+import static com.gromaudio.simplifiedmediaplayer.ui.activity.BackgroundUIActivity.PLAYER_TYPE_CARPLAY;
 
 
 public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerMgrCallback {
@@ -84,7 +88,7 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
             ctx.getString(R.string.android_auto), R.drawable.ic_android_auto_75dp
         );
         appDetail.setState(DISABLED);
-        appDetail.setPlayerType(PlayerMgr.PlayerType.AAUTO_PLAYER);
+        appDetail.setPlayerType(AAUTO_PLAYER);
         result.add(appDetail);
         return result;
     }
@@ -301,7 +305,18 @@ public class LauncherFragment extends BaseFragment implements PlayerMgr.IPlayerM
                         if (!appDetail.isSelected()) {
                             a.setSelection(itemPosition);
                         }
-                        Intent intent = new Intent(getContext(), CarPlayActivity.class);
+                        Intent intent = new Intent(getContext(), BackgroundUIActivity.class);
+                        intent.putExtra(EXTRA_PLAYER_TYPE, PLAYER_TYPE_CARPLAY);
+                        startActivity(intent);
+                    }
+                    //AAuto is special too
+                    else if (appDetail.getPlayerType() == AAUTO_PLAYER) {
+                        IDemoPlayer player = mPlayerMgr.activatePlayer(appDetail.getPlayerType());
+                        if (!appDetail.isSelected()) {
+                            a.setSelection(itemPosition);
+                        }
+                        Intent intent = new Intent(getContext(), BackgroundUIActivity.class);
+                        intent.putExtra(EXTRA_PLAYER_TYPE, PLAYER_TYPE_AAUTO);
                         startActivity(intent);
                     }
                     else {

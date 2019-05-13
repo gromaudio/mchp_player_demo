@@ -7,6 +7,7 @@ interface IBaseServiceListener {
 
     void onAOAPStatus(int key, int value);
     void onCarPlayStatus(int key, int value);
+    void onAAutoStatus(int key, int value);
     void onIAPStatus(int key, int value);
     void onExternalSoundState(int state);
 }

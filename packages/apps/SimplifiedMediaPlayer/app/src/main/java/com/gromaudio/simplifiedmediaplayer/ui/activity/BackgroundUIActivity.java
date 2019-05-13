@@ -2,6 +2,7 @@ package com.gromaudio.simplifiedmediaplayer.ui.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 import android.os.ServiceManager;
+import android.widget.TextView;
+
 import com.gromaudio.vlineservice.IBaseService;
 import com.gromaudio.vlineservice.IBaseServiceListener;
 
@@ -20,10 +23,20 @@ import com.gromaudio.simplifiedmediaplayer.R;
 
 /**
  * Created by Vitaly Kuznetsov <v.kuznetsov.work@gmail.com> on 13.12.17.
+ *
+ * It plays the role of background activity for CarPlay or AndroidAuto UI.
  */
-public class CarPlayActivity extends Activity {
+public class BackgroundUIActivity extends Activity {
 
-    private static final String TAG = "CarPlayActivity";
+    private static final String TAG = "BackgroundUIActivity";
+
+
+    public static final String EXTRA_PLAYER_TYPE = "extra_player_type";
+
+    public static final int PLAYER_TYPE_CARPLAY = 0;
+
+    public static final int PLAYER_TYPE_AAUTO = 1;
+
 
     private static final String NATIVE_SERVICE_NAME = "demo.base_daemon";
 
@@ -35,9 +48,11 @@ public class CarPlayActivity extends Activity {
 
     private Handler mHandler = new Handler();
 
-    private View mContentView;
+    private TextView mContentView;
 
     private View mControlsView;
+
+    private int mPlayerType;
 
 
     private final View.OnTouchListener mButtonTouchListener = new View.OnTouchListener() {
@@ -53,10 +68,19 @@ public class CarPlayActivity extends Activity {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             Log.d(TAG, "onTouch: X="+motionEvent.getX()+"; Y="+motionEvent.getY());
             if (mNativeService!=null) {
-                try {
-                    mNativeService.sendCarPlayTouchEvent((int)motionEvent.getX(), (int)motionEvent.getY());
-                } catch(RemoteException ex) {
-                    Log.d(TAG, "sendCarPlayTouchEvent() ex: "+ ex);
+                if (mPlayerType == PLAYER_TYPE_CARPLAY) {
+                    try {
+                        mNativeService.sendCarPlayTouchEvent((int) motionEvent.getX(), (int) motionEvent.getY());
+                    } catch (RemoteException ex) {
+                        Log.d(TAG, "sendCarPlayTouchEvent() ex: " + ex);
+                    }
+                }
+                else {
+                    try {
+                        mNativeService.sendAAutoTouchEvent((int) motionEvent.getX(), (int) motionEvent.getY());
+                    } catch (RemoteException ex) {
+                        Log.d(TAG, "sendAAutoTouchEvent() ex: " + ex);
+                    }
                 }
             }
             return false;
@@ -73,21 +97,46 @@ public class CarPlayActivity extends Activity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        if (getIntent() != null) {
+            mPlayerType = getIntent().getIntExtra(EXTRA_PLAYER_TYPE, mPlayerType);
+            Log.d(TAG, "onCreate: from intent mPlayerType="+mPlayerType);
+        }
+
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        mContentView = (TextView)findViewById(R.id.fullscreen_content);
+        mContentView.setText( mPlayerType==PLAYER_TYPE_CARPLAY ? R.string.carplay_connection : R.string.aauto_connection);
         mContentView.setOnTouchListener(mOnTouchListener);
         findViewById(R.id.dummy_button).setOnTouchListener(mButtonTouchListener);
         connectToNativeService();
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent()");
+        if (intent != null) {
+            mPlayerType = intent.getIntExtra(EXTRA_PLAYER_TYPE, mPlayerType);
+            Log.d(TAG, "onNewIntent: mPlayerType="+mPlayerType);
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (mNativeService != null) {
-            try {
-                mNativeService.activateCarPlay(BOTTOM_PANEL_HEIGHT);
-            }catch (RemoteException ex) {
-                Log.d(TAG, "activateCarPlay() ex: " + ex);
+            if (mPlayerType == PLAYER_TYPE_CARPLAY) {
+                try {
+                    mNativeService.activateCarPlay(BOTTOM_PANEL_HEIGHT);
+                } catch (RemoteException ex) {
+                    Log.d(TAG, "activateCarPlay() ex: " + ex);
+                }
+            }
+            else {
+                try {
+                    mNativeService.activateAAuto(BOTTOM_PANEL_HEIGHT);
+                } catch (RemoteException ex) {
+                    Log.d(TAG, "activateAAuto() ex: " + ex);
+                }
             }
         }
         hide();
@@ -97,10 +146,19 @@ public class CarPlayActivity extends Activity {
     protected void onPause() {
         super.onPause();
         if (mNativeService != null) {
-            try {
-                mNativeService.activateCarPlay(0);
-            }catch (RemoteException ex) {
-                Log.d(TAG, "activateCarPlay() ex: " + ex);
+            if (mPlayerType == PLAYER_TYPE_CARPLAY) {
+                try {
+                    mNativeService.activateCarPlay(0);
+                } catch (RemoteException ex) {
+                    Log.d(TAG, "activateCarPlay() ex: " + ex);
+                }
+            }
+            else {
+                try {
+                    mNativeService.activateAAuto(0);
+                } catch (RemoteException ex) {
+                    Log.d(TAG, "activateAAuto() ex: " + ex);
+                }
             }
         }
     }
@@ -186,16 +244,34 @@ public class CarPlayActivity extends Activity {
         private static final int STKEY_DISPLAY = 2;
         private static final int STKEY_MAIN_AUDIO = 3;
         private static final int STKEY_UI_BUTTON = 4;
+        private static final int STKEY_SPEECH_AUDIO = 5;
+        private static final int STKEY_SYSTEM_AUDIO = 6;
 
         @Override
         public void onCarPlayStatus(int key, int value) {
-            if ( ((key == STKEY_ACTIVE) && (value==0)) || ((key == STKEY_UI_BUTTON) && (value==1))) {
-                mHandler.post(new Runnable() {
+            if (mPlayerType == PLAYER_TYPE_CARPLAY) {
+                if (((key == STKEY_ACTIVE) && (value == 0)) || ((key == STKEY_UI_BUTTON) && (value == 1))) {
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             finish();
                         }
                     });
+                }
+            }
+        }
+
+        @Override
+        void onAAutoStatus(int key, int value) {
+            if (mPlayerType == PLAYER_TYPE_AAUTO) {
+                if (((key == STKEY_ACTIVE) && (value == 0)) || ((key == STKEY_UI_BUTTON) && (value == 1))) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
+                }
             }
         }
 

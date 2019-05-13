@@ -16,9 +16,11 @@
     <string name="car_play">Car Play</string>
     <string name="android_auto">Android Auto</string>
 
-    <string name="title_activity_car_play">CarPlayActivity</string>
+    <string name="title_activity_background_ui">BackgroundUIActivity</string>
     <string name="dummy_button">Close</string>
     <string name="carplay_connection">CarPlay\n...connecting...</string>
+
+    <string name="aauto_connection">Android Auto\n...connecting...</string>
 
     <string name="carplay_port1">Port1: Disconnected</string>
     <string name="carplay_port2">Port2: Android Device</string>
