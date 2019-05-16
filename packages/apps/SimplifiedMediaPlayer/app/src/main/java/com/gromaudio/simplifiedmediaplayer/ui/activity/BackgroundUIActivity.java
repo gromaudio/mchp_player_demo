@@ -63,6 +63,7 @@ public class BackgroundUIActivity extends Activity {
         }
     };
 
+    /*
     private final View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -78,6 +79,36 @@ public class BackgroundUIActivity extends Activity {
                 else {
                     try {
                         mNativeService.sendAAutoTouchEvent((int) motionEvent.getX(), (int) motionEvent.getY());
+                    } catch (RemoteException ex) {
+                        Log.d(TAG, "sendAAutoTouchEvent() ex: " + ex);
+                    }
+                }
+            }
+            return false;
+        }
+    };
+    */
+
+    private final View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            Log.d(TAG, "onTouch: X="+motionEvent.getX()+"; Y="+motionEvent.getY() + "; action="+motionEvent.getAction());
+            if (mNativeService!=null) {
+                int action = motionEvent.getAction();
+                if (mPlayerType == PLAYER_TYPE_CARPLAY) {
+                    try {
+                        if (action == MotionEvent.ACTION_DOWN) {
+                            mNativeService.sendCarPlayTouchEvent((int) motionEvent.getX(), (int) motionEvent.getY());
+                        }
+                    } catch (RemoteException ex) {
+                        Log.d(TAG, "sendCarPlayTouchEvent() ex: " + ex);
+                    }
+                }
+                else {
+                    try {
+                        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_MOVE) {
+                            mNativeService.sendAAutoTouchEvent((int) motionEvent.getX(), (int) motionEvent.getY(), action);
+                        }
                     } catch (RemoteException ex) {
                         Log.d(TAG, "sendAAutoTouchEvent() ex: " + ex);
                     }

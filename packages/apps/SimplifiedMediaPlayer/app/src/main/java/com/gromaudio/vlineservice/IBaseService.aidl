@@ -20,5 +20,5 @@ interface IBaseService {
   //AAuto client
   int  getAAutoStatus();
   void activateAAuto(int activate);
-  void sendAAutoTouchEvent(int x, int y);
+  void sendAAutoTouchEvent(int x, int y, int action);
 }
