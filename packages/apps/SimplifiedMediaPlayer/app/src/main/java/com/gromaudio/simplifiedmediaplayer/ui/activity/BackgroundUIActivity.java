@@ -87,6 +87,14 @@ public class BackgroundUIActivity extends Activity {
         }
     };
 
+    private final View.OnGenericMotionListener mOnGenericMotionListener = new View.OnGenericMotionListener() {
+        @Override
+        public boolean onGenericMotion(View view, MotionEvent motionEvent) {
+            Log.d(TAG, "onGenericMotion: X="+motionEvent.getX()+"; Y="+motionEvent.getY() + "; pressure=" + motionEvent.getPressure());
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +114,7 @@ public class BackgroundUIActivity extends Activity {
         mContentView = (TextView)findViewById(R.id.fullscreen_content);
         mContentView.setText( mPlayerType==PLAYER_TYPE_CARPLAY ? R.string.carplay_connection : R.string.aauto_connection);
         mContentView.setOnTouchListener(mOnTouchListener);
+        mContentView.setOnGenericMotionListener(mOnGenericMotionListener);
         findViewById(R.id.dummy_button).setOnTouchListener(mButtonTouchListener);
         connectToNativeService();
     }
