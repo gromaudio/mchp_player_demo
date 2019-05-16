@@ -66,7 +66,7 @@ public class BackgroundUIActivity extends Activity {
     private final View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            Log.d(TAG, "onTouch: X="+motionEvent.getX()+"; Y="+motionEvent.getY());
+            Log.d(TAG, "onTouch: X="+motionEvent.getX()+"; Y="+motionEvent.getY() + "; action="+motionEvent.getAction());
             if (mNativeService!=null) {
                 if (mPlayerType == PLAYER_TYPE_CARPLAY) {
                     try {
@@ -83,15 +83,7 @@ public class BackgroundUIActivity extends Activity {
                     }
                 }
             }
-            return false;
-        }
-    };
-
-    private final View.OnGenericMotionListener mOnGenericMotionListener = new View.OnGenericMotionListener() {
-        @Override
-        public boolean onGenericMotion(View view, MotionEvent motionEvent) {
-            Log.d(TAG, "onGenericMotion: X="+motionEvent.getX()+"; Y="+motionEvent.getY() + "; pressure=" + motionEvent.getPressure());
-            return false;
+            return true;
         }
     };
 
@@ -114,7 +106,6 @@ public class BackgroundUIActivity extends Activity {
         mContentView = (TextView)findViewById(R.id.fullscreen_content);
         mContentView.setText( mPlayerType==PLAYER_TYPE_CARPLAY ? R.string.carplay_connection : R.string.aauto_connection);
         mContentView.setOnTouchListener(mOnTouchListener);
-        mContentView.setOnGenericMotionListener(mOnGenericMotionListener);
         findViewById(R.id.dummy_button).setOnTouchListener(mButtonTouchListener);
         connectToNativeService();
     }
